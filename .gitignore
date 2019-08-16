@@ -35,3 +35,6 @@ Debug/
 Release/
 Backup/
 .vs/
+State Machines/WestWorldWithMessaging/WestWorldWithMessaging.vcxproj.user
+*.user
+State Machines/WestWorldWithMessaging/WestWorldWithMessaging.vcxproj.user

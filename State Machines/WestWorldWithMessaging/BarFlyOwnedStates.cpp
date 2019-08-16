@@ -25,40 +25,97 @@ BarFlyGlobalState* BarFlyGlobalState::Instance()
   return &instance;
 }
 
-
 void BarFlyGlobalState::Execute(BarFly* barfly)
 {
-  //1 in 10 chance of needing the bathroom (provided she is not already
-  //in the bathroom)
-  /*if ((RandFloat() < 0.1) &&
-    !barfly->GetFSM()->isInState(*VisitBathroom::Instance()))
-  {
-    barfly->GetFSM()->ChangeState(VisitBathroom::Instance());
-  }*/
+  SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+  cout << "\n" << GetNameOfEntity(barfly->ID()) << ": *Drinking heavily..*";
 }
 
 bool BarFlyGlobalState::OnMessage(BarFly* barfly, const Telegram& msg)
 {
   SetTextColor(BACKGROUND_RED | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
 
-  /*switch (msg.Msg)
+  switch (msg.Msg)
   {
-  case Msg_HiHoneyImHome:
+  case Msg_Whatchalookingat:
   {
     cout << "\nMessage handled by " << GetNameOfEntity(barfly->ID()) << " at time: "
       << Clock->GetCurrentTime();
 
-    SetTextColor(FOREGROUND_GREEN | FOREGROUND_INTENSITY);
+    SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
 
     cout << "\n" << GetNameOfEntity(barfly->ID()) <<
-      ": Hi honey. Let me make you some of mah fine country stew";
+      ": Hey you ! Whatcha lookin at !?";
 
-    wife->GetFSM()->ChangeState(CookStew::Instance());
+    barfly->GetFSM()->ChangeState(FightWithMiner::Instance());
   }
 
   return true;
 
-  }*///end switch
+  }
+
+  return false;
+}
+
+
+//------------------------------------------------------------------------Fighting state
+
+FightWithMiner* FightWithMiner::Instance()
+{
+  static FightWithMiner instance;
+
+  return &instance;
+}
+
+
+void FightWithMiner::Enter(BarFly* barfly)
+{
+  cout << "\n" << GetNameOfEntity(barfly->ID()) << ": Gonna fight you, just wait there ! *Walks over to him*";
+  barfly->SetFighting(true);
+}
+
+
+void FightWithMiner::Execute(BarFly* barfly)
+{
+  SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+  cout << "\n" << GetNameOfEntity(barfly->ID()) << ": *Throws a fist to the miner!*";
+
+  Dispatch->DispatchMessage(SEND_MSG_IMMEDIATELY, //time delay
+    barfly->ID(),    //ID of sender
+    ent_Miner_Bob,   //ID of recipient
+    Msg_ThrowFist,   //the message
+    NO_ADDITIONAL_INFO);
+}
+
+void FightWithMiner::Exit(BarFly* barfly)
+{
+  SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+  cout << "\n" << GetNameOfEntity(barfly->ID()) << ": Next time I'ma beat you up!";
+}
+
+
+bool FightWithMiner::OnMessage(BarFly* barfly, const Telegram& msg)
+{
+  SetTextColor(BACKGROUND_RED | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+  switch (msg.Msg)
+  {
+  case Msg_DodgeFist:
+  {
+    cout << "\nMessage handled by " << GetNameOfEntity(barfly->ID()) << " at time: "
+      << Clock->GetCurrentTime();
+
+    SetTextColor(FOREGROUND_BLUE | FOREGROUND_INTENSITY);
+
+    cout << "\n" << GetNameOfEntity(barfly->ID()) <<
+      ": Grrrrr!!";
+
+    barfly->GetFSM()->RevertToPreviousState();
+  }
+
+  return true;
+
+  }
 
   return false;
 }

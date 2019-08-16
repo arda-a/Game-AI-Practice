@@ -239,19 +239,51 @@ void QuenchThirst::Execute(Miner* pMiner)
 
   cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "That's mighty fine sippin' liquer";
 
-  pMiner->GetFSM()->ChangeState(EnterMineAndDigForNugget::Instance());  
+  Dispatch->DispatchMessage(SEND_MSG_IMMEDIATELY, //time delay
+    pMiner->ID(),        //ID of sender
+    ent_Barfly,            //ID of recipient
+    Msg_Whatchalookingat,   //the message
+    NO_ADDITIONAL_INFO);
+
 }
 
 
 void QuenchThirst::Exit(Miner* pMiner)
 { 
+  SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
   cout << "\n" << GetNameOfEntity(pMiner->ID()) << ": " << "Leaving the saloon, feelin' good";
 }
 
 
 bool QuenchThirst::OnMessage(Miner* pMiner, const Telegram& msg)
 {
-  //send msg to global message handler
+  SetTextColor(BACKGROUND_RED | FOREGROUND_RED | FOREGROUND_GREEN | FOREGROUND_BLUE);
+
+  switch (msg.Msg)
+  {
+  case Msg_ThrowFist:
+  {
+    cout << "\nMessage handled by " << GetNameOfEntity(pMiner->ID()) << " at time: "
+      << Clock->GetCurrentTime();
+
+    SetTextColor(FOREGROUND_RED | FOREGROUND_INTENSITY);
+
+    cout << "\n" << GetNameOfEntity(pMiner->ID()) <<
+      ": *Dodges the fist !* Haha.. Learn to fight!";
+
+    Dispatch->DispatchMessage(SEND_MSG_IMMEDIATELY, //time delay
+      pMiner->ID(),     //ID of sender
+      ent_Barfly,       //ID of recipient
+      Msg_DodgeFist,   //the message
+      NO_ADDITIONAL_INFO);
+
+    pMiner->GetFSM()->ChangeState(EnterMineAndDigForNugget::Instance());
+  }
+
+  return true;
+
+  }
+
   return false;
 }
 

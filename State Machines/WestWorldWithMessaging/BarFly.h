@@ -1,5 +1,5 @@
-#ifndef MINERSWIFE_H
-#define MINERSWIFE_H
+#ifndef BARFLY_H
+#define BARFLY_H
 //------------------------------------------------------------------------
 //
 //  Name: MinersWife.h
@@ -31,16 +31,11 @@ private:
 
   location_type   m_Location;
 
-  //is he presently drinking?
-  bool m_drinking;
-  bool m_swearing;
   bool m_fighting;
 
 public:
 
   BarFly(int id) :m_Location(location_type::saloon),
-    m_drinking(true),
-    m_swearing(false),
     m_fighting(false),
     BaseGameEntity(id)
 
@@ -48,9 +43,7 @@ public:
     //set up the state machine
     m_pStateMachine = new StateMachine<BarFly>(this);
 
-    //m_pStateMachine->SetCurrentState(DoHouseWork::Instance());
-
-    //m_pStateMachine->SetGlobalState(WifesGlobalState::Instance());
+    m_pStateMachine->SetCurrentState(BarFlyGlobalState::Instance());
   }
 
   ~BarFly() { delete m_pStateMachine; }
@@ -67,16 +60,9 @@ public:
   //----------------------------------------------------accessors
   location_type Location()const { return m_Location; }
   void          ChangeLocation(location_type loc) { m_Location = loc; }
-
-  bool          Drinking()const { return m_drinking; }
-  void          SetDrinking(bool val) { m_drinking = val; }
-
-  bool          Swearing() const { return m_swearing; }
-  void          SetSwearing(bool val) { m_swearing = val; }
-
+  
   bool          Fighting()const { return m_fighting; }
   void          SetFighting(bool val) { m_fighting = val; }
-
 };
 
 #endif

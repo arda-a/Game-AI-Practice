@@ -29,38 +29,13 @@ public:
   //this is a singleton
   static BarFlyGlobalState* Instance();
 
-  virtual void Enter(BarFly* wife) {}
+  virtual void Enter(BarFly* barfly) {}
 
-  virtual void Execute(BarFly* wife);
+  virtual void Execute(BarFly* barfly);
 
-  virtual void Exit(BarFly* wife) {}
+  virtual void Exit(BarFly* barfly) {}
 
-  virtual bool OnMessage(BarFly* wife, const Telegram& msg);
-};
-
-
-class Drink : public State<BarFly>
-{
-private:
-
-  Drink() {}
-
-  //copy ctor and assignment should be private
-  Drink(const Drink&);
-  Drink& operator=(const Drink&);
-
-public:
-
-  //this is a singleton
-  static Drink* Instance();
-
-  virtual void Enter(BarFly* wife) {}
-
-  virtual void Execute(BarFly* wife);
-
-  virtual void Exit(BarFly* wife) {}
-
-  virtual bool OnMessage(BarFly* wife, const Telegram& msg);
+  virtual bool OnMessage(BarFly* barfly, const Telegram& msg);
 };
 
 
@@ -79,11 +54,11 @@ public:
   //this is a singleton
   static FightWithMiner* Instance();
 
-  virtual void Enter(BarFly* wife) {}
+  virtual void Enter(BarFly* barfly);
 
-  virtual void Execute(BarFly* wife);
+  virtual void Execute(BarFly* barfly);
 
-  virtual void Exit(BarFly* wife) {}
+  virtual void Exit(BarFly* barfly);
 
-  virtual bool OnMessage(BarFly* wife, const Telegram& msg);
+  virtual bool OnMessage(BarFly* barfly, const Telegram& msg);
 };
